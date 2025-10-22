@@ -11,7 +11,7 @@ export class OrderService {
     @InjectModel(Order.name) private orderModel: Model<Order>,
     @InjectModel(Cart.name) private cartModel: Model<Cart>,
     @InjectModel(Product.name) private productModel: Model<Product>,
-  ) {}
+  ) { }
 
   async placeOrder(userId: string) {
     // Use lean() for type safety and performance
@@ -66,5 +66,13 @@ export class OrderService {
 
   async getAllOrders() {
     return this.orderModel.find().populate('userId').populate('items.productId').exec();
+  }
+
+  async findByUser(userId: string) {
+    return this.orderModel
+      .find({ userId })
+      .populate('items.productId', 'name price') // show product details
+      .sort({ createdAt: -1 })
+      .exec();
   }
 }

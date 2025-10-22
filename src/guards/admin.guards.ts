@@ -12,7 +12,7 @@ export class AdminGuard implements CanActivate {
     if (!user) {
       throw new ForbiddenException('Unauthorized access');
     }
-    console.log('User Role:', user); // Debugging line to check user role
+
     if (user.role !== 'admin') {
       throw new ForbiddenException('Access denied: Admins only');
     }

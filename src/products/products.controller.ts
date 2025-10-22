@@ -3,12 +3,14 @@ import { AuthGuard } from '@nestjs/passport';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { Types } from 'mongoose';
+import { AdminGuard } from 'src/guards/admin.guards';
 
 @Controller('products')
 @UseGuards(AuthGuard('jwt'))
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) { }
 
+  @UseGuards(AdminGuard)
   @Post('create')
   create(@Body() createProductDto: CreateProductDto, @Req() req) {
     const user = req.user; // comes from JWT
@@ -45,8 +47,15 @@ export class ProductsController {
     });
   }
 
+  @UseGuards(AdminGuard)
   @Post('delete')
   async remove(@Body('id') id: string) {
     return this.productsService.remove(id);
+  }
+
+  @UseGuards(AdminGuard)
+  @Post('update')
+  async update(@Body('id') id: string, @Body() updateProductDto: CreateProductDto) {
+    return this.productsService.update(id, updateProductDto);
   }
 }
